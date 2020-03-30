@@ -1,6 +1,6 @@
 ---
 
-mgmt_hostname: "{{ ansible_local.citc.mgmt_hostname }}"
+mgmt_hostname: mgmt
 
 users: []
 
@@ -8,7 +8,7 @@ users: []
 slurm_version: 19.05
 
 slurm_cluster_name: cluster
-slurm_control_machine: "{{ mgmt_hostname }}"
+slurm_control_machine: mgmt
 
 slurm_partitions:
   - name: compute
@@ -18,6 +18,6 @@ slurm_partitions:
 filesystem_target_address: fileserver
 filesystem_mount_point: /shared
 
-ansible_pull_repo: https://github.com/ACRC/slurm-ansible-playbook.git
+ansible_pull_repo: https://github.com/sperezl/slurm-ansible-playbook
 
 software_install_dir: /mnt/{{ filesystem_mount_point }}
