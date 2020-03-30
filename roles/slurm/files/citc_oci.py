@@ -60,6 +60,11 @@ def get_images(oci_config, compartment_id: str, cluster_id: str) -> Tuple[oci.co
 
     return non_gpu_image, gpu_image
 
+def get_image_id(oci_config, compartment_id: str, image_display_name:str) -> str:
+    """
+    Return the id of the image by display_name
+    """
+    return oci.core.ComputeClient(oci_config).list_images(compartment_id, display_name=image_display_name)[0].id
 
 def create_node_config(oci_config, hostname: str, ip: Optional[str], nodespace: Dict[str, str], ssh_keys: str) -> oci.core.models.LaunchInstanceDetails:
     """
@@ -70,8 +75,7 @@ def create_node_config(oci_config, hostname: str, ip: Optional[str], nodespace: 
     ad = f"{nodespace['ad_root']}{ad_number}"
     shape = [f for f in features if f.startswith("shape=")][0].split("=")[1].strip()
     subnet = get_subnet(oci_config, nodespace["compartment_id"], nodespace["vcn_id"], nodespace["cluster_id"])
-    non_gpu_image, gpu_image = get_images(oci_config, nodespace["compartment_id"], nodespace["cluster_id"])
-    image = (gpu_image if "GPU" in shape else non_gpu_image).id  # This will raise an exception if the image is not found
+    image = image = get_image_id(oci_config, nodespace["compartment_id"], "NodeImage")
 
     with open("/home/slurm/bootstrap.sh", "rb") as f:
         user_data = base64.b64encode(f.read()).decode()
