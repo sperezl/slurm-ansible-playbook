@@ -1,7 +1,7 @@
 ---
 
 - name: create and configure NFS server
-  hosts: nfsserver
+  hosts: fileserver
   roles:
     - nfs-server
     - ssh
