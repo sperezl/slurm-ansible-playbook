@@ -14,7 +14,7 @@
 
 - name: Wait for fileserver to be ready checking nfs tcp port open (critical path - avoids race condition)
   wait_for:
-    host: "{{ ansible_local.citc.fileserver_ip }}"
+    host: "fileserver"
     port: 2049
     state: started
 
