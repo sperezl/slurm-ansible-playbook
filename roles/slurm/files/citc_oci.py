@@ -44,6 +44,11 @@ def get_node_state(oci_config, log, compartment_id: str, hostname: str) -> str:
         log.error(f"{hostname}: Multiple matches found for {hostname}")
     return still_exist[0].lifecycle_state
 
+def get_image_id(oci_config, compartment_id: str, image_display_name:str) -> str:
+    """
+    Return the id of the image by display_name
+    """
+    return oci.core.ComputeClient(oci_config).list_images(compartment_id, display_name=image_display_name)[0].id
 
 def create_node_config(oci_config, hostname: str, ip: Optional[str], nodespace: Dict[str, str], ssh_keys: str) -> oci.core.models.LaunchInstanceDetails:
     """
@@ -54,8 +59,7 @@ def create_node_config(oci_config, hostname: str, ip: Optional[str], nodespace: 
     ad = f"{nodespace['ad_root']}{ad_number}"
     shape = [f for f in features if f.startswith("shape=")][0].split("=")[1].strip()
     subnet = get_subnet(oci_config, nodespace["compartment_id"], nodespace["vcn_id"])
-    image_name = "Oracle-Linux-7.6-Gen2-GPU-2019.02.20-0" if "GPU" in shape else "Oracle-Linux-7.6-2019.02.20-0"
-    image = get_images()[image_name][nodespace["region"]]
+    image = image = get_image_id(oci_config, nodespace["compartment_id"], "NodeImage")
 
     with open("/home/slurm/bootstrap.sh", "rb") as f:
         user_data = base64.b64encode(f.read()).decode()
@@ -68,7 +72,7 @@ def create_node_config(oci_config, hostname: str, ip: Optional[str], nodespace: 
         image_id=image,
         display_name=hostname,
         hostname_label=hostname,
-        create_vnic_details=oci.core.models.CreateVnicDetails(private_ip=ip, subnet_id=subnet) if ip else None,
+        create_vnic_details=oci.core.models.CreateVnicDetails(private_ip=ip, subnet_id=subnet, assign_public_ip=False) if ip else None,
         metadata={
             "ssh_authorized_keys": ssh_keys,
             "user_data": user_data,
