@@ -60,4 +60,9 @@
     - devtoolset
     - sos
     - debug-tools
-    - lmod
+    - lmod  
+
+- name: easybuild
+  hosts: management
+  roles:
+    - easybuild

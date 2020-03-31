@@ -1,0 +1,55 @@
+- name: User creation depends on ssd
+  service:
+    name: sssd
+    state: restarted
+
+- name: User creation depends on divsrv
+  service:
+    name: dirsrv@mgmt
+    state: started
+    enabled: yes
+
+- name: Create easybuild user
+  shell: /usr/local/sbin/add_user_ldap easybuild EasyBuildUser EasyBuildUser file:///home/opc/.ssh/id_rsa.pub
+  become: yes
+
+- name: Create common dir
+  file:
+    path: /mnt/shared/home/easybuild/common
+    state: directory
+  become: yes
+  become_user: easybuild
+
+- name: Download bootstrap file
+  get_url:
+    url: https://raw.githubusercontent.com/easybuilders/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
+    dest: /mnt/shared/home/easybuild/common/bootstrap_eb.py
+    owner: easybuild
+    group: users
+  become: yes
+  become_user: easybuild
+
+- name: Add common dir to modulepath
+  lineinfile:
+    path: /etc/profile.d/z00_lmod.sh
+    line: export MODULEPATH=$(/usr/share/lmod/lmod/libexec/addto --append MODULEPATH /mnt/shared/home/easybuild/common/modules/all)
+  become: yes
+
+- name: Made easybuild home readable
+  file:
+    dest: /mnt/shared/home/easybuild/common
+    owner: sperezl
+    group: users
+    mode: u=rwX,g=rX,o=rX
+    recurse: yes
+  become: yes
+
+- name: Install easybuild
+  script: /usr/bin/python /mnt/shared/home/easybuild/common/bootstrap_eb.py /mnt/shared/home/easybuild/common
+  environment:
+    PATH: /usr/share/lmod/lmod/libexec:{{ ansible_env.PATH }}
+    EASYBUILD_PREFIX: /mnt/shared/home/easybuild/common
+    EASYBUILD_MODULES_TOOL: Lmod
+  become: yes
+  become_user: easybuild
+  
