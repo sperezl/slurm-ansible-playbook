@@ -2,7 +2,7 @@
 users: []
 
 # From https://www.schedmd.com/downloads.php
-slurm_version: 17.11
+slurm_version: 19.05
 
 slurm_cluster_name: cluster
 slurm_control_machine: mgmt
@@ -15,6 +15,6 @@ slurm_partitions:
 filesystem_target_address: fileserver
 filesystem_mount_point: /shared
 
-ansible_pull_repo: https://github.com/ACRC/slurm-ansible-playbook.git
+ansible_pull_repo: https://github.com/sperezl/slurm-ansible-playbook.git
 
 software_install_dir: /mnt/{{ filesystem_mount_point }}
