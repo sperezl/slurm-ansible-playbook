@@ -1,5 +1,3 @@
----
----
 - name: User creation depends on ssd
   service:
     name: sssd
