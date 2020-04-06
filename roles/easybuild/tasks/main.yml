@@ -20,14 +20,14 @@
   become: yes
   become_user: easybuild
 
-  - name: Create sources dir
+- name: Create sources dir
   file:
     path: /mnt/shared/home/easybuild/sources
     state: directory
   become: yes
   become_user: easybuild
 
-  - name: Create easybuild .config dir
+- name: Create easybuild .config dir
   file:
     path: /mnt/shared/home/easybuild/.config/easybuild
     state: directory
