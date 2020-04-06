@@ -1,0 +1,28 @@
+---
+- name: install lsb-release
+  yum:
+    name: redhat-lsb-core
+
+- name: copy arch file
+  copy:
+    src: arch.sh
+    dest: /etc/profile.d/arch.sh
+
+- name: Define x86_64 mount dir
+  cmd: |
+    source /etc/profile.d/arch.sh
+    cat << EOF > /etc/systemd/system/mnt-shared-home-easybuild-x86_64.mount
+    [Unit]
+    Description=Unit for bind mount of easybuild directories
+    After=mnt-shared.mount
+  
+    [Mount]
+    What=/mnt/shared/home/easybuild/{{OS_NAME}}/{{OS_VERSION}}/{{ARCHITECTURE}}
+    Where=/mnt/shared/home/easybuild/x86_64
+    Type=none
+    Options=bind,_netdev
+    TimeoutSec=10
+
+    [Install]
+    WantedBy=multi-user.target
+    EOF
