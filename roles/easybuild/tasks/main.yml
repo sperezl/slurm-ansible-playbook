@@ -20,6 +20,20 @@
   become: yes
   become_user: easybuild
 
+  - name: Create sources dir
+  file:
+    path: /mnt/shared/home/easybuild/sources
+    state: directory
+  become: yes
+  become_user: easybuild
+
+  - name: Create easybuild .config dir
+  file:
+    path: /mnt/shared/home/easybuild/.config/easybuild
+    state: directory
+  become: yes
+  become_user: easybuild
+
 - name: Download bootstrap file
   get_url:
     url: https://raw.githubusercontent.com/easybuilders/easybuild-framework/develop/easybuild/scripts/bootstrap_eb.py
@@ -35,9 +49,15 @@
     line: export MODULEPATH=$(/usr/share/lmod/lmod/libexec/addto --append MODULEPATH /mnt/shared/home/easybuild/common/modules/all)
   become: yes
 
+- name: Add x86_64 dir to modulepath
+  lineinfile:
+    path: /etc/profile.d/z00_lmod.sh
+    line: export MODULEPATH=$(/usr/share/lmod/lmod/libexec/addto --append MODULEPATH /mnt/shared/home/easybuild/x86_64/modules/all)
+  become: yes
+
 - name: Made easybuild home readable
   file:
-    dest: /mnt/shared/home/easybuild/common
+    dest: /mnt/shared/home/easybuild
     owner: easybuild
     group: users
     mode: u=rwX,g=rX,o=rX
@@ -53,3 +73,19 @@
   become: yes
   become_user: easybuild
   
+- name: Insert easybuild configuration 
+  blockinfile:
+    path: /mnt/shared/home/easybuild/.config/easybuild/config.cfg
+    block: |
+      installpath=/mnt/shared/home/easybuild/x86_64
+      buildpath=/mnt/shared/home/easybuild/tmp
+      containerpath=/mnt/shared/home/easybuild/containers
+      sourcepath=/mnt/shared/home/easybuild/sources
+  become: yes
+  become_user: easybuild
+
+- name: Module load Easybuild in bashrc
+  lineinfile:
+    dest: /mnt/shared/home/easybuild/.bashrc
+    line: "module load EasyBuild"
+    owner: easybuild
