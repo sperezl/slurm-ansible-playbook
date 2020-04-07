@@ -12,12 +12,12 @@
 
 - name: Append common modulepath
   lineinfile:
-    dest: /etc/profile.d/zz0_lmod.sh
+    dest: /etc/profile.d/z00_lmod.sh
     line: export MODULEPATH=$(/usr/share/lmod/lmod/libexec/addto --append MODULEPATH /mnt/shared/home/easybuild/common/modules/all)
   become: yes
 
 - name: Add x86_64 to modulepath
   lineinfile:
-    dest: /etc/profile.d/zz0_lmod.sh
+    dest: /etc/profile.d/z00_lmod.sh
     line: export MODULEPATH=$(/usr/share/lmod/lmod/libexec/addto --append MODULEPATH /mnt/shared/home/easybuild/x86_64/modules/all)
   become: yes
