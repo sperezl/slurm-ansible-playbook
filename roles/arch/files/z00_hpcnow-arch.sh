@@ -62,3 +62,31 @@ identify_os_name_and_version
 export ARCHITECTURE=${ARCHITECTURE}
 export OS_VERSION=${OS_VERSION}
 export OS_NAME=${OS_NAME}
+
+if [ -z $OS_NAME ] || [ -z $OS_VERSION ]; then
+    echo "OS_NAME and/or OS_VERSION are empty! Exit."
+fi
+
+#if [ -z "${LMOD_DIR}" ]; then
+#    echo "Lmod not detected. Can not continue."
+#fi
+
+#module unuse /opt/ohpc/pub/modulefiles
+export SOFTWARE_ROOT="/mnt/shared/home/easybuild"
+export EASYBUILD_PREFIX=${SOFTWARE_ROOT}/arch/${OS_NAME}/${OS_VERSION}/${ARCHITECTURE}
+export EASYBUILD_INSTALLPATH=${EASYBUILD_PREFIX}
+export EASYBUILD_SOURCEPATH=${SOFTWARE_ROOT}/sources
+export EASYBUILD_TMP_LOGDIR=${SOFTWARE_ROOT}/tmp
+export EASYBUILD_BUILDPATH=/dev/shm/$USER
+
+#if [[ -e ${SOFTWARE_ROOT}/common/modules/all ]]; then
+#    module use ${SOFTWARE_ROOT}/common/modules/all
+#else
+#    echo "Easybuild common module path is not available"
+#fi
+
+if [[ -e ${EASYBUILD_PREFIX}/modules/all ]]; then
+    module use ${EASYBUILD_PREFIX}/modules/all
+else
+    echo "Applications ${EASYBUILD_PREFIX} module path is not available"
+fi
