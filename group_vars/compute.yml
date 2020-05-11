@@ -6,13 +6,8 @@ slurm_packages:
 slurm_role: compute
 
 install_packages:
-  - epel-release
-  - redhat-lsb-core
   - Lmod
-  - byobu
   - "@Development Tools"
-  - libopenssl-devel
-  - libssl-dev
   - openssl-devel
 
 mpi_packages:
