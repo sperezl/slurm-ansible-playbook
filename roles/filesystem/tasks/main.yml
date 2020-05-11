@@ -31,3 +31,11 @@
     state: mounted
   when:
     ansible_local.citc.csp == "aws"
+
+- name: Esarchive
+  mount:
+    path: /esarchive
+    src: /mnt/shared/esarchive
+    opts: bind
+    fstype: none
+    state: mounted
