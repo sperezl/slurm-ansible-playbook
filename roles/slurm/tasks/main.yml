@@ -57,11 +57,32 @@
     system: yes
     uid: 245
 
-- name: install Slurm from local
+ name: install Slurm from local
   yum: /mnt/shared/slurm/slurm*.rpm
-    state: present
-#  yum: name=slurm-{{ item }}-{{ slurm_version }}* state=present
-#  loop: "{{ slurm_packages }}"
+    name: "{{ slurmpackages }}"
+  vars:
+     slurmpackages:
+     - /mnt/shared/slurm/slurm-19.05.6-1.el7.x86_64.rpm
+#     - /mnt/shared/slurm/slurm-example-configs-19.05.6-1.el7.x86_64.rpm
+     - /mnt/shared/slurm/slurm-pam_slurm-19.05.6-1.el7.x86_64.rpm
+     - /mnt/shared/slurm/slurm-slurmd-19.05.6-1.el7.x86_64.rpm
+     - /mnt/shared/slurm/slurm-contribs-19.05.6-1.el7.x86_64.rpm
+     - /mnt/shared/slurm/slurm-libpmi-19.05.6-1.el7.x86_64.rpm 
+     - /mnt/shared/slurm/slurm-perlapi-19.05.6-1.el7.x86_64.rpm
+#     - /mnt/shared/slurm/slurm-slurmdbd-19.05.6-1.el7.x86_64.rpm
+     - /mnt/shared/slurm/slurm-devel-19.05.6-1.el7.x86_64.rpm
+#     - /mnt/shared/slurm/slurm-openlava-19.05.6-1.el7.x86_64.rpm
+#     - /mnt/shared/slurm/slurm-slurmctld-19.05.6-1.el7.x86_64.rpm
+#     - /mnt/shared/slurm/slurm-torque-19.05.6-1.el7.x86_64.rpm
+
+- name: ensure a list of packages installed
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - httpd
+    - httpd-tools
+
 
 
 - name: create slurm config directory
