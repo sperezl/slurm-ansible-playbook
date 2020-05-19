@@ -34,13 +34,13 @@
     enabled: yes
     state: started
 
-- name: Add Slurm repository
-  yum_repository:
-    name: slurm
-    description: Slurm
-    baseurl: https://download.opensuse.org/repositories/home:/Milliams:/citc/CentOS%20EPEL/
-    gpgcheck: yes
-    gpgkey: https://download.opensuse.org/repositories/home:/Milliams:/citc/CentOS%20EPEL/repodata/repomd.xml.key
+#- name: Add Slurm repository
+#  yum_repository:
+#    name: slurm
+#    description: Slurm
+#    baseurl: https://download.opensuse.org/repositories/home:/Milliams:/citc/CentOS%20EPEL/
+#    gpgcheck: yes
+#    gpgkey: https://download.opensuse.org/repositories/home:/Milliams:/citc/CentOS%20EPEL/repodata/repomd.xml.key
 
 - name: create slurm group
   group:
@@ -57,9 +57,12 @@
     system: yes
     uid: 245
 
-- name: install Slurm
-  yum: name=slurm-{{ item }}-{{ slurm_version }}* state=present
-  loop: "{{ slurm_packages }}"
+- name: install Slurm from local
+  yum: /mnt/shared/slurm/slurm*.rpm
+    state: present
+#  yum: name=slurm-{{ item }}-{{ slurm_version }}* state=present
+#  loop: "{{ slurm_packages }}"
+
 
 - name: create slurm config directory
   file:
