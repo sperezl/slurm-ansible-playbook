@@ -58,7 +58,7 @@
     uid: 245
 
 - name: install Slurm from local
-  yum: /mnt/shared/slurm/slurm*.rpm
+  yum:
     name: "{{ slurmpackages }}"
   vars:
      slurmpackages:
