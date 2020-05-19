@@ -57,7 +57,7 @@
     system: yes
     uid: 245
 
- name: install Slurm from local
+- name: install Slurm from local
   yum: /mnt/shared/slurm/slurm*.rpm
     name: "{{ slurmpackages }}"
   vars:
